@@ -1,0 +1,104 @@
+/*
+ Applies core Gradle plugins, which are ones built into Gradle itself.
+*/
+plugins {
+  // Java for compile and unit test of Java source files. Read more at:
+  // https://docs.gradle.org/current/userguide/java_plugin.html
+  id 'java'
+
+  // Checkstyle for style checks and reports on Java source files. Read more at:
+  // https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+  id 'checkstyle'
+
+  // JaCoCo for coverage metrics and reports of Java source files. Read more at:
+  // https://docs.gradle.org/current/userguide/jacoco_plugin.html
+  id 'jacoco'
+}
+
+/*
+ Applies community Gradle plugins, usually added as build-tools in Config.
+*/
+
+
+
+// SpotBugs for quality checks and reports of source files. Read more at:
+// https://spotbugs.readthedocs.io/en/stable/gradle.html
+apply plugin: 'com.github.spotbugs'
+
+/*
+ Configures the Checkstyle "checkstyle" plugin. Remove this and the plugin if
+ you want to skip these checks and report generation.
+*/
+checkstyle {
+  sourceSets = [sourceSets.main]
+  ignoreFailures = false
+}
+
+/*
+ Configures the JaCoCo "jacoco" plugin. Remove this if you want to skip
+ these checks and report generation.
+
+ Set minimum code coverage to fail build, where 0.01 = 1%.
+*/
+check.dependsOn jacocoTestCoverageVerification
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.80
+      }
+    }
+  }
+}
+
+test {
+  exclude 'com/amazon/ata/test/junit/tests/**'
+}
+
+/*
+ Configures the SpotBugs "com.github.spotbugs" plugin. Remove this and the
+ plugin to skip these checks and report generation.
+*/
+spotbugs {
+  spotbugsTest.enabled = false
+  ignoreFailures = true
+}
+
+spotbugsMain {
+  reports {
+    html {
+      enabled = true
+    }
+  }
+}
+
+repositories {
+  gradlePluginPortal()
+  google()
+}
+/*
+ Resolve build and test dependencies using BrazilGradle.
+*/
+dependencies {
+  implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-android'
+  implementation  group: 'org.reflections', name: 'reflections', version: '0.9.12'
+  implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+  implementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.0'
+  implementation group: 'org.junit.platform', name: 'junit-platform-engine', version: '1.8.0-M1'
+  implementation 'org.junit.platform:junit-platform-launcher:1.6.2'
+
+  implementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+/*
+ Specifies that JUnit Platform (a.k.a. JUnit 5) should be used to execute tests.
+
+ For mixed JUnit 4 and 5 tests, add 'JUnit-4-12-migration = 5.x;' to
+ test-dependencies in Config.
+*/
+test {
+  useJUnitPlatform()
+}
+
