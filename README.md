@@ -11,7 +11,7 @@ The `Box` class should contain the following variables:
 
 The `Box` class should expose the following methods:
  - getters for `height`, `width`, and `length`
- - `validateBoxDimensions(double height, double, width, double length)` which allows a user to check if 
+ - `validateBoxDimensions(double height, double width, double length)` which allows a user to check if 
    the provided dimensions are legal. If they are all legal, return `true`, otherwise `false`.
 
 Update the `Box` class constructor to throw a `DimensionValueException` if the values provided are not legal.
